@@ -39,8 +39,10 @@ jobs:
       - name: contract
         run: go test -race -count=1 -run '^TestContract_' ./internal/contract/...
 
+      # spectral-action (Docker) не видит npm install на runner — CLI на хосте + rulesets
+      - name: Install Spectral rulesets
+        run: npm install -g @stoplight/spectral-cli @stoplight/spectral-rulesets
+
       - name: openapi-lint
-        uses: stoplightio/spectral-action@v0.8.13
-        with:
-          file_glob: 'hw/17/api/openapi.yaml'
-          spectral_ruleset: spectral:oas
+        working-directory: hw/17
+        run: spectral lint api/openapi.yaml -r spectral:oas
