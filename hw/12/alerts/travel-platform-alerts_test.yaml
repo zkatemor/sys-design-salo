@@ -1,0 +1,32 @@
+# promtool test rules tests/travel-platform-alerts_test.yaml
+rule_files:
+  - travel-platform-alerts.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 5m
+    input_series:
+      - series: 'http_requests_total{service="travel-platform",route="/api/v1/search",status="200"}'
+        values: '100+100x100'
+      - series: 'http_requests_total{service="travel-platform",route="/api/v1/search",status="500"}'
+        values: '0+0x100'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: SearchHighErrorRate
+        exp_alerts: []
+
+  - interval: 5m
+    input_series:
+      - series: 'http_requests_total{service="travel-platform",route="/api/v1/search",status="200"}'
+        values: '90+90x100'
+      - series: 'http_requests_total{service="travel-platform",route="/api/v1/search",status="500"}'
+        values: '10+10x100'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: SearchHighErrorRate
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: travel-platform
+              component: search

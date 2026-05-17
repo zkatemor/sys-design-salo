@@ -1,0 +1,91 @@
+groups:
+  - name: travel_search_slo_alerts
+    rules:
+      - alert: SearchHighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{
+              service="travel-platform",
+              route=~"/api/v1/search.*",
+              status=~"5.."
+            }[5m]))
+            /
+            sum(rate(http_requests_total{
+              service="travel-platform",
+              route=~"/api/v1/search.*"
+            }[5m]))
+          ) > 0.01
+          and
+          sum(rate(http_requests_total{
+            service="travel-platform",
+            route=~"/api/v1/search.*"
+          }[5m])) > 0.1
+        for: 3m
+        labels:
+          severity: critical
+          service: travel-platform
+          component: search
+          sli: availability
+          team: platform
+        annotations:
+          summary: "Поиск: error rate > 1% (5xx)"
+          description: "Доля 5xx на /api/v1/search — {{ $value | humanizePercentage }}. SLO availability 99.9% под угрозой."
+          runbook_url: "https://wiki.example.com/runbooks/search-high-error-rate"
+          dashboard_url: "https://grafana.example.com/d/travel-search-slo"
+
+      - alert: SearchLatencyP99High
+        expr: |
+          histogram_quantile(0.99,
+            sum by (le) (
+              rate(http_request_duration_seconds_bucket{
+                service="travel-platform",
+                route=~"/api/v1/search.*"
+              }[5m])
+            )
+          ) > 2.0
+          and
+          sum(rate(http_request_duration_seconds_count{
+            service="travel-platform",
+            route=~"/api/v1/search.*"
+          }[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: travel-platform
+          component: search
+          sli: latency
+          team: platform
+        annotations:
+          summary: "Поиск: p99 latency > 2s"
+          description: "p99 = {{ $value | humanizeDuration }}. NFR p95 < 1.5s нарушен на хвосте распределения."
+          runbook_url: "https://wiki.example.com/runbooks/search-latency-p99-high"
+          dashboard_url: "https://grafana.example.com/d/travel-search-latency"
+
+      - alert: SearchSaturationHigh
+        expr: |
+          (
+            sum(rate(container_cpu_usage_seconds_total{pod=~"search-api-.*"}[5m]))
+            /
+            sum(kube_pod_container_resource_limits{
+              resource="cpu",
+              pod=~"search-api-.*"
+            })
+          ) > 0.85
+          or
+          (
+            avg(pg_stat_activity_count{service="travel-platform", role="search"})
+            /
+            avg(pg_settings_max_connections{service="travel-platform"})
+          ) > 0.80
+        for: 10m
+        labels:
+          severity: warning
+          service: travel-platform
+          component: search
+          sli: saturation
+          team: platform
+        annotations:
+          summary: "Поиск: высокая saturation (CPU или DB pool)"
+          description: "CPU или connection pool > 80%. Риск 503 при пике 20 RPS."
+          runbook_url: "https://wiki.example.com/runbooks/search-saturation-high"
+          dashboard_url: "https://grafana.example.com/d/travel-search-infra"

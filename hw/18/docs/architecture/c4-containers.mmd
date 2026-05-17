@@ -1,0 +1,34 @@
+%% C4 Container — CalorieTrack (L2)
+%% Рендер: Mermaid CLI, Structurizr, или встроенный preview в IDE
+
+flowchart TB
+    U[("Пользователь")]
+
+    subgraph CalorieTrack["CalorieTrack Platform"]
+        APP["Mobile App<br/>Flutter"]
+        GW["API Gateway<br/>Kong"]
+        USR["User Service<br/>Go"]
+        CAT["Food Catalog Service<br/>Go"]
+        DIA["Diary Service<br/>Go"]
+        PG[("PostgreSQL 16")]
+        RD[("Redis 7")]
+        KF["Kafka"]
+    end
+
+    OFF["Open Food Facts<br/>HTTPS/JSON"]
+    PUSH["Push FCM/APNs"]
+
+    U -->|HTTPS| APP
+    APP -->|HTTPS/JSON| GW
+    GW -->|HTTP/JSON| USR
+    GW -->|HTTP/JSON| CAT
+    GW -->|HTTP/JSON| DIA
+    USR -->|SQL| PG
+    DIA -->|SQL| PG
+    CAT -->|SQL| PG
+    CAT -->|TCP| RD
+    CAT -->|HTTPS| OFF
+    DIA -->|gRPC| USR
+    DIA -->|gRPC| CAT
+    DIA -->|Kafka| KF
+    USR -.->|HTTPS| PUSH

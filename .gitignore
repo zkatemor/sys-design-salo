@@ -207,6 +207,7 @@ marimo/_lsp/
 __marimo__/
 
 .idea
-/.idea
+.idea/
 .DS_Store
+/.idea
 hw/.DS_Store
