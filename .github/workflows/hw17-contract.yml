@@ -45,4 +45,4 @@ jobs:
 
       - name: openapi-lint
         working-directory: hw/17
-        run: spectral lint api/openapi.yaml -r spectral:oas
+        run: spectral lint api/openapi.yaml -r .spectral.yaml
