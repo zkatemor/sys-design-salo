@@ -43,5 +43,4 @@ jobs:
         uses: stoplightio/spectral-action@v0.8.13
         with:
           file_glob: 'hw/17/api/openapi.yaml'
-        env:
-          SPECTRAL_RULESET: spectral:oas
+          spectral_ruleset: spectral:oas
