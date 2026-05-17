@@ -40,7 +40,7 @@ jobs:
         run: go test -race -count=1 -run '^TestContract_' ./internal/contract/...
 
       - name: openapi-lint
-        uses: stoplightio/spectral-action@v0.8.15
+        uses: stoplightio/spectral-action@v0.8.13
         with:
           file_glob: 'hw/17/api/openapi.yaml'
         env:
