@@ -117,9 +117,9 @@ go test -race -run '^TestContract_' ./internal/contract/...
 
 ## Настройка в GitHub (один раз)
 
-1. **Запушить** workflow: `/.github/workflows/hw17-contract.yml` в **корне** репозитория `otus-sd` (не `hw/17/.github/` — Actions его не подхватывает).
+1. **Запушить** в репозиторий **`zkatemor/sys-design-salo`**: `/.github/workflows/hw17-contract.yml` (пути в workflow — `hw/17/**`, ветки `main` и `master`).
 2. **Settings → Actions → General** — разрешить запуск workflows.
-3. После push: вкладка **Actions** → run `hw17-contract` (шаг `contract` в логах).
-4. *(Опционально)* **Settings → Branches → Branch protection** для `main`: «Require status checks» → job `test` / step `contract`.
+3. **Actions → hw17-contract → Run workflow** (если после push runs пусто — ручной запуск `workflow_dispatch`).
+4. *(Опционально)* Branch protection: require check `test`.
 
 Без branch protection CI на PR всё равно бежит, но merge не блокируется при красном CI.

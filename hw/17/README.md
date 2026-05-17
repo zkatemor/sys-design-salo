@@ -30,6 +30,6 @@ go run ./cmd/api   # :8080
 
 ## CI
 
-Workflow в **корне репозитория**: [`.github/workflows/hw17-contract.yml`](../../../.github/workflows/hw17-contract.yml) (шаг **`contract`**).
+Workflow в корне репозитория **sys-design-salo**: [`.github/workflows/hw17-contract.yml`](../../.github/workflows/hw17-contract.yml) (шаг **`contract`**).
 
-> GitHub Actions не видит `.github` внутри `hw/17/` — только в корне `otus-sd`.
+После push: **Actions → hw17-contract**. Если runs пусто — **Run workflow** (кнопка справа, `workflow_dispatch`).

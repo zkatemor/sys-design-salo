@@ -1,21 +1,22 @@
 # Контрактные тесты ДЗ-17 (ctrsvc).
-# GitHub читает workflows только из .github/workflows/ в КОРНЕ репозитория.
+# Репозиторий: github.com/zkatemor/sys-design-salo (корень = этот репо).
 name: hw17-contract
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
-      - 'sys-design-salo/hw/17/**'
+      - 'hw/17/**'
       - '.github/workflows/hw17-contract.yml'
   pull_request:
     paths:
-      - 'sys-design-salo/hw/17/**'
+      - 'hw/17/**'
       - '.github/workflows/hw17-contract.yml'
+  workflow_dispatch: {}
 
 defaults:
   run:
-    working-directory: sys-design-salo/hw/17
+    working-directory: hw/17
 
 jobs:
   test:
@@ -41,6 +42,6 @@ jobs:
       - name: openapi-lint
         uses: stoplightio/spectral-action@v0.8.15
         with:
-          file_glob: 'api/openapi.yaml'
+          file_glob: 'hw/17/api/openapi.yaml'
         env:
           SPECTRAL_RULESET: spectral:oas
